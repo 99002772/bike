@@ -2,6 +2,8 @@ package com.consumer.services;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -13,19 +15,28 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-    
+@PropertySource({"classpath:application.properties"})
     @Component
     public class TopicConsumer {
 
  
+    	@Value("${url}")
+    	private String url;
+    	
+        @Value("${user}")
+    	private String user;
 
+    	@Value("${password}")
+    	private String password;
+    	
                 private final List<String> messages = new ArrayList<>();
 
  
 
-                private final String url = "jdbc:postgresql://localhost/Bike";
-                private final String user = "postgres";
-                private final String password = "postgres123";
+				/*
+				 * private final String url = "jdbc:postgresql://localhost/Bike"; private final
+				 * String user = "postgres"; private final String password = "postgres123";
+				 */
 
         public Connection connect() {
         Connection conn = null;
@@ -43,9 +54,9 @@ import java.util.List;
      public void listen(String message) {
     	Object file = JSONValue.parse(message);
     	JSONObject jsonObjectdecode = (JSONObject)file;
-    	Long vin =(Long)jsonObjectdecode.get("vin");
+    	String vin =(String)jsonObjectdecode.get("vin");
         String engine_status=(String)jsonObjectdecode.get("engine_status");
-        Double latitude=(Double)jsonObjectdecode.get("latitude");
+        Long latitude=(Long)jsonObjectdecode.get("latitude");
         String name = (String)jsonObjectdecode.get("name");
        Long odometer=(Long)jsonObjectdecode.get("odometer");
         Long engine_rpm=(Long)jsonObjectdecode.get("engine_rpm");
@@ -64,9 +75,9 @@ import java.util.List;
                     stmnt = connect().createStatement();
                     String query = "INSERT INTO bike(vin, engine_status, latitude,name,engine_rpm,speed,fuel_capacity,engine_load,longitude,fuel_consumption,engine_temp,odometer) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
                     PreparedStatement pst = conn.prepareStatement(query);       
-                    pst.setLong(1,vin);
+                    pst.setString(1,vin);
                     pst.setString(2,engine_status);
-                    pst.setDouble(3,latitude);
+                    pst.setLong(3,latitude);
                     pst.setString(4, name);
                     pst.setLong(5,engine_rpm);
                     pst.setLong(6,speed);
