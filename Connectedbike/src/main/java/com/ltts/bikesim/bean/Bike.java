@@ -1,5 +1,7 @@
 package com.ltts.bikesim.bean;
 
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,19 +11,19 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bike {
-	
-	private String vin;
-	private String engine_status;
-	private Double latitude;
-	private Long longitude;
-	private String name;
-	private Long odometer;
-	private Integer engine_rpm;
-	private Integer speed; 
-	private Integer fuel_capacity;
-	private Long engine_load;
-	private Long fuel_consumption;
-	private Long engine_temp;
 
+@Component
+public class Bike {
+	 private String vin;
+	 private Integer speed;
+	 private String engine_status;
+	 private Long latitude;
+	 private Long longitude;
+	 private String name;
+	 private Long odometer; 
+	 private Integer engine_rpm;
+	 private Integer fuel_capacity;
+	 private Long engine_load;
+	 private Long fuel_consumption;
+	 private Long engine_temp;	 
 }

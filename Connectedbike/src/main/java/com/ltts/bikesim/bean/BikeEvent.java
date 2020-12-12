@@ -21,6 +21,5 @@ public class BikeEvent {
 	String light_status; 
 	Integer tire_pressure_front;
 	Integer tire_pressure_rear;
-	Double handle_angle;
-	 
+	Double handle_angle; 
 }

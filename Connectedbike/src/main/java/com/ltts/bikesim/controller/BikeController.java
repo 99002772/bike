@@ -15,37 +15,6 @@ import com.ltts.bikesim.service.BikeService;
 @RestController
 @RequestMapping("kafka")
 public class BikeController {
-	/*
-	  Logger logger = LoggerFactory.getLogger(BikeController.class);
-	  Map<String, Bike> BikeMap = new HashMap<String, Bike>();
-	 
-
-	@Autowired
-	private KafkaTemplate<String, Bike> kafkaTemplate;
-
-	private static final String TOPIC = "Kafka_Example";
-
-	/*
-	 * public void addSimulation(Bike bike){ BikeMap.put(bike.getVin(), bike);
-	 * kafkaTemplate.send(TOPIC, new Bike("abc","ON",29.5));
-	 * //logger.info("vinnumber inside addSimulation" +bike.getVin()); }
-	 */
-
-/*	@GetMapping("/publish/{vin}")
-	public String getdata(@PathVariable("vin") final String vin) {
-		kafkaTemplate.send(TOPIC, new Bike(vin, "ON", 29.56465));
-
-		// kafkaTemplate.send(TOPIC, new User(name, "Technology", 12000L));
-
-		return "Published successfully";
-	}
-	
-	@PostMapping("/publish")
-	public String post(@RequestBody Bike bike) {
-
-		kafkaTemplate.send(TOPIC, bike);
-		return "Published successfully";
-	}*/
 	
 	@Autowired
 	BikeService bikeservice;
@@ -60,7 +29,7 @@ public class BikeController {
 	public String postController(@RequestBody Bike bike)
 	{
 	System.out.println(" post");
-	bikeservice.postBike(bike);
+	//bikeservice.postBike(bike);
 	return"sucessfully posted";
 	}
 
@@ -82,7 +51,7 @@ public class BikeController {
 	 */
 	 
 	@PostMapping("/publish/bike")
-	public String getUserId(@RequestBody Bike bike) {
+	public String getUserId(@RequestBody Bike bike) { 
       kafkaTemplate.send(TOPICBIKE, bike);
       return "Published successfully";
   }
@@ -90,9 +59,20 @@ public class BikeController {
 	
 	@PostMapping("/publish/bikeevent")
 	public String getBikeEvent(@RequestBody BikeEvent bikeEvent) {
-      kafkaTemplateBikeEvent.send(TOPICBIKEEVENT, bikeEvent);
+		bikeservice.postBikeEvent(bikeEvent);
+      //kafkaTemplateBikeEvent.send(TOPICBIKEEVENT, bikeEvent);
       return "Published successfully";
   }
+	
+	@GetMapping("/publish")
+	public String post()
+	{ 
+			 
+			bikeservice.post();
+			 return"Published successfully";
+			 }
+	
+	
 }
 	
 	

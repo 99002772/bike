@@ -22,13 +22,13 @@ import java.util.Map.Entry;
 //import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
-import com.ltts.bikesim.bean.Bike;
+
 import com.ltts.bikesim.controller.BikeController;
 
 
@@ -59,14 +59,13 @@ public class BikeScheduler {
 	 fixedRateString="${TIMEOUT_SCHEDULER_DELAY}") 
 	 public void pushBikeData()
 	 { 
-		// bikeController.post();
+	bikeController.post();
 	 
 	 }
 	
 	
 	
-	 
-
+	
 	/*
 	 * @Scheduled(initialDelayString="${TIMEOUT_SCHEDULER_INTIAL_DELAY}",
 	 * fixedRateString="${TIMEOUT_SCHEDULER_DELAY}") public void pushVehicleData() {
