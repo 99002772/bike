@@ -1,5 +1,10 @@
 package com.ltts.bikesim.bean;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +14,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Component
 public class BikeEvent {
 	Integer id;
 	String vin;
@@ -22,4 +29,5 @@ public class BikeEvent {
 	Integer tire_pressure_front;
 	Integer tire_pressure_rear;
 	Double handle_angle; 
+	String timestamp;
 }

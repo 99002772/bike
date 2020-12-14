@@ -70,7 +70,15 @@ public class BikeController {
 			 
 			bikeservice.post();
 			 return"Published successfully";
-			 }
+	}
+	
+	@GetMapping("/publish/postbikeevent")
+	public String bikeEvent()
+	{ 
+			 
+			bikeservice.bikeEvent();
+			 return"Published successfully";
+	}
 	
 	
 }

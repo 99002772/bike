@@ -1,5 +1,7 @@
 package com.ltts.bikesim.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +33,8 @@ public class BikeService {
 	 BikeUtil bikeUtil;
 	 @Autowired
 	 Bike bike;
+	 @Autowired
+	 BikeEvent bikeEvent;
 	 
 
 	private static final String TOPICBIKE = "Bike";
@@ -80,11 +84,18 @@ public class BikeService {
 		return "success";
 	}
 	
+	public String bikeEvent()
+	{
+		bikeEventRandom();
+		kafkaTemplateBikeEvent.send(TOPICBIKEEVENT, bikeEvent);
+		return "success";
+	}
+	
 	public void bikeRandom() {
 		 
 		 bike.setVin("honda2010a7");
 		 bike.setSpeed(bikeUtil.getRandomNumber(20,100));
-		 bike.setEngine_status("off");
+		 bike.setEngine_status(bikeUtil.getRandomElement());
 		 bike.setLatitude(bikeUtil.getRandomNumberLong(50,100));
 		 bike.setLongitude(bikeUtil.getRandomNumberLong(25,30));
 		 bike.setName("honda");
@@ -95,6 +106,30 @@ public class BikeService {
 		 bike.setFuel_consumption(bikeUtil.getRandomNumberLong(0,15));
 		 bike.setEngine_temp(bikeUtil.getRandomNumberLong(69,100));
 	 
+	}
+	
+	
+	public void bikeEventRandom()
+	{
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	    Date now = new Date();
+	    String strDate = sdf.format(now);
+	    bikeEvent.setTimestamp(strDate);
+		bikeEvent.setId(bikeUtil.getEventId()+1);
+		bikeEvent.setVin("honda2010a7");
+		bikeEvent.setLatitude(bikeUtil.getRandomNumberDouble(10,100));
+		bikeEvent.setLongitude(bikeUtil.getRandomNumberDouble(10,100));
+		bikeEvent.setAltitude(bikeUtil.getRandomNumber(12,50));
+		bikeEvent.setHeading(bikeUtil.getRandomNumber(0,360));
+		bikeEvent.setSpeed(bikeUtil.getRandomNumber(0,120));
+		bikeEvent.setBrake_operation(bikeUtil.getRandomElement());
+		bikeEvent.setLight_status(bikeUtil.getRandomElement());
+		bikeEvent.setTire_pressure_front(bikeUtil.getRandomNumber(0,35));
+		bikeEvent.setTire_pressure_rear(bikeUtil.getRandomNumber(0,40));
+		bikeEvent.setHandle_angle(bikeUtil.getRandomNumberDouble(0,180));
+
+
+
 	}
 	
 	
