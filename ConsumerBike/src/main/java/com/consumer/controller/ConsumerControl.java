@@ -31,7 +31,7 @@ public class ConsumerControl {
     @GetMapping("/messages/bikeevent")
     public List<String> getmessages1() {
     	
-    	return topicConsumer.getMessages();
+    	return bikeEventTopicConsumer.getMessages();
     }
 
 

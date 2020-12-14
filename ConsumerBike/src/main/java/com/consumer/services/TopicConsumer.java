@@ -20,23 +20,23 @@ import java.util.List;
     public class TopicConsumer {
 
  
-    	@Value("${url}")
-    	private String url;
-    	
-        @Value("${user}")
-    	private String user;
-
-    	@Value("${password}")
-    	private String password;
+		/*
+		 * @Value("${url}") private String url;
+		 * 
+		 * @Value("${user}") private String user;
+		 * 
+		 * @Value("${password}") private String password;
+		 */
     	
                 private final List<String> messages = new ArrayList<>();
 
  
 
-				/*
-				 * private final String url = "jdbc:postgresql://localhost/Bike"; private final
-				 * String user = "postgres"; private final String password = "postgres123";
-				 */
+				
+				  private final String url = "jdbc:postgresql://localhost/Bike";
+				  private final String user = "postgres";
+				  private final String password = "postgres123";
+				 
 
         public Connection connect() {
         Connection conn = null;

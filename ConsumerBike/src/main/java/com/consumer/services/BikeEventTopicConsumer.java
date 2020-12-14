@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.simple.JSONObject;
@@ -52,6 +53,7 @@ return conn;
 		Long tire_pressure_front =(Long)jsonObjectdecode.get("tire_pressure_front");
 		Long tire_pressure_rear =(Long)jsonObjectdecode.get("tire_pressure_rear");
 		Double handle_angle=(Double)jsonObjectdecode.get("handle_angle");
+		String timestamp =(String)jsonObjectdecode.get("timestamp");
 		
 
 		BikeEventTopicConsumer bikeEventTopicConsumer = new BikeEventTopicConsumer();
@@ -59,7 +61,7 @@ return conn;
 		try {
 		        Statement stmnt = null;
 		        stmnt = connect().createStatement();
-		        String query = "INSERT INTO bikeevent(id, vin,latitude,longitude,altitude,heading,speed,brake_operation,light_status,tire_pressure_front,tire_pressure_rear,handle_angle) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+		        String query = "INSERT INTO bikeevent(id, vin,latitude,longitude,altitude,heading,speed,brake_operation,light_status,tire_pressure_front,tire_pressure_rear,handle_angle,timestamp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		        PreparedStatement pst = conn.prepareStatement(query);       
 		        pst.setLong(1,id);
 		        pst.setString(2,vin);
@@ -73,6 +75,8 @@ return conn;
 		        pst.setLong(10,tire_pressure_front);
 		        pst.setLong(11,tire_pressure_rear);
 		        pst.setDouble(12,handle_angle);
+		        pst.setString(13, timestamp);
+		        
 		        System.out.println("after insert");
 		        pst.executeUpdate();
 		        System.out.println("Afterupdate");
