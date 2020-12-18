@@ -1,22 +1,34 @@
 package com.ltts.bikesim.service;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ltts.bikesim.bean.Bike;
 import com.ltts.bikesim.bean.BikeEvent;
+import com.ltts.bikesim.bean.BikeLog;
+import com.ltts.bikesim.bean.Location;
+
 
 
 @Service
 public class BikeService {
 	Map<String, Bike> bikeMap = new HashMap<String, Bike>();
 	Map<Integer,BikeEvent> bikeEventMap = new HashMap<Integer, BikeEvent>();
+	Map<String, BikeLog> vehicleMap = new HashMap<String, BikeLog>();
+	
 
 	public BikeService() {
 	super();
@@ -28,17 +40,26 @@ public class BikeService {
 	
 	@Autowired
 	private KafkaTemplate<String, BikeEvent> kafkaTemplateBikeEvent;
+	
+	@Autowired
+	private KafkaTemplate<String, BikeLog> kafkaTemplateBikeLog;
 	 
 	 @Autowired
 	 BikeUtil bikeUtil;
 	 @Autowired
-	 Bike bike;
-	 @Autowired
 	 BikeEvent bikeEvent;
+	 @Autowired
+	 Bike bike;
+	 
+	
+	 String vin;
+	 String name;
 	 
 
 	private static final String TOPICBIKE = "Bike";
 	private static final String TOPICBIKEEVENT = "BikeEvent";
+	private static final String TOPICBIKELOG = "BikeLog";
+	
 
 	/**
 	 * Adding VehicelSimulation as a object into VehicleSimulationMap
@@ -50,18 +71,10 @@ public class BikeService {
 	/**
 	 * Removing  VehicelSimulation object from VehicleSimulationMap
 	 */
-	/*
-	 * public void removeSimulation(Bike bike) throws InterruptedException{
-	 * bikeMap.remove(bike.getVin()); }
-	 */
 	
-	public Map<String, Bike> getBikeMap() {
-		return bikeMap;
-	}
-
-	public void setBikeMap(Map<String, Bike> bikeMap) {
-		this.bikeMap = bikeMap;
-	}
+	 
+	 
+	
 
 	
 	/*
@@ -76,14 +89,41 @@ public class BikeService {
 	}
 	
 	
-	public String post()
+	public String post() throws IOException
 	{
-		//bike.setSpeed(90);
-		bikeRandom();
-		kafkaTemplate.send(TOPICBIKE, bike);
+		Bike bike = new Bike();
+		BikeLog vehicle=vehicleMap.get(vin);
+        if(vehicle!=null) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    	Date now = new Date();
+    	String strDate = sdf.format(now);
+    	 bike.setTimestamp(strDate);
+    	 Location location = new Location();
+		 bikeUtil.readDataFromExcel(location);
+		 bike.setLatitude(location.getLatitude());
+		 bike.setLongitude(location.getLongitude());
+		 bike.setVin(vehicle.getVin());
+		 bike.setOdometer(bikeUtil.getRandomNumberLong(200,300));
+		 long odometerValue =bike.getOdometer();
+		 bike.setEngine_status("off");
+		 bike.setName(vehicle.getName());
+		 System.out.println(bike.getLatitude());
+		 System.out.println(bike.getLongitude());
+		 bike.setEngine_rpm(bikeUtil.getRandomNumber(200,300));
+		 Integer rpm = bike.getEngine_rpm();
+		 bike.setSpeed(bikeUtil.calculateSpeedFromRpm(rpm));
+		 bike.setFuel_capacity(bikeUtil.getRandomNumber(0,15));
+		 bike.setEngine_load(bikeUtil.getRandomNumberLong(20,80));
+		 bike.setFuel_consumption(bikeUtil.getRandomNumberLong(0,15));
+		 bike.setEngine_temp(bikeUtil.getRandomNumberLong(69,100));
+		 kafkaTemplate.send(TOPICBIKE, bike);}
+        else
+        {
+        	System.out.println("no vehicle data");
+        }
+		
 		return "success";
 	}
-	
 	public String bikeEvent()
 	{
 		bikeEventRandom();
@@ -91,21 +131,21 @@ public class BikeService {
 		return "success";
 	}
 	
-	public void bikeRandom() {
-		 
-		 bike.setVin("honda2010a7");
-		 bike.setSpeed(bikeUtil.getRandomNumber(20,100));
-		 bike.setEngine_status(bikeUtil.getRandomElement());
-		 bike.setLatitude(bikeUtil.getRandomNumberLong(50,100));
-		 bike.setLongitude(bikeUtil.getRandomNumberLong(25,30));
-		 bike.setName("honda");
-		 bike.setOdometer(bikeUtil.getRandomNumberLong(200,300));
-		 bike.setEngine_rpm(bikeUtil.getRandomNumber(200,300));
-		 bike.setFuel_capacity(bikeUtil.getRandomNumber(0,15));
-		 bike.setEngine_load(bikeUtil.getRandomNumberLong(20,80));
-		 bike.setFuel_consumption(bikeUtil.getRandomNumberLong(0,15));
-		 bike.setEngine_temp(bikeUtil.getRandomNumberLong(69,100));
-	 
+	public void bikeRegister(BikeLog vehicle)
+	{
+		 vin = vehicle.getVin();
+         name = vehicle.getName();
+        vehicleMap.put(vehicle.getVin(), vehicle);
+        System.out.println(vehicleMap);
+         kafkaTemplateBikeLog.send(TOPICBIKELOG,vehicle);
+	}
+	
+	public String stopSimulation()
+	{
+		System.out.println(vin);
+        vehicleMap.remove(vin);
+        // TODO Auto-generated method stub
+        return "bike simulation stopped ";
 	}
 	
 	
@@ -147,18 +187,4 @@ public class BikeService {
 	
 	
 	
-	
-	
-	
-	/*
-	 * public String post() { // TODO Auto-generated method stub
-	 * kafkaTemplate.send(TOPIC, new
-	 * Bike(89,"off",25.99,789L,"him",9L,56,78,3,5L,67L,56L));
-	 * 
-	 * 
-	 * 
-	 * return "Published successfully";
-	 * 
-	 * }
-	 */
 }

@@ -3,8 +3,7 @@ package com.ltts.bikesim.scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
- 
-
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -57,7 +56,7 @@ public class BikeScheduler {
 	
 	@Scheduled(initialDelayString="${TIMEOUT_SCHEDULER_INTIAL_DELAY}",
 	 fixedRateString="${TIMEOUT_SCHEDULER_DELAY}") 
-	 public void pushBikeData()
+	 public void pushBikeData() throws IOException
 	 { 
 	bikeController.post();
 	 

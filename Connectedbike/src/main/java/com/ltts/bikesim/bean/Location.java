@@ -1,7 +1,5 @@
 package com.ltts.bikesim.bean;
 
-import org.springframework.stereotype.Component;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
-public class BikeLog {
-	
-	private String vin;
-	private String name;
-			
-			
-		
-		}
-
+public class Location {
+	Double latitude;
+	Double longitude;
+}
