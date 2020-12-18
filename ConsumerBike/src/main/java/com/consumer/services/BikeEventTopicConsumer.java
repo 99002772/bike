@@ -18,24 +18,21 @@ import org.springframework.stereotype.Component;
 public class BikeEventTopicConsumer {
 
     private final List<String> messages = new ArrayList<>();
-
-
-
     private final String url = "jdbc:postgresql://localhost/Bike";
     private final String user = "postgres";
     private final String password = "postgres123";
 
-public Connection connect() {
-Connection conn = null;
-try {
-     conn = DriverManager.getConnection(url, user, password);
-    System.out.println("Connected to the PostgreSQL server successfully.");
-	 } 
-catch (SQLException e) {
-       System.out.println(e.getMessage());
-   }
-return conn;
-}
+	public Connection connect() {
+	Connection conn = null;
+	try {
+	     conn = DriverManager.getConnection(url, user, password);
+	    System.out.println("Connected to the PostgreSQL server successfully.");
+		 } 
+	catch (SQLException e) {
+	       System.out.println(e.getMessage());
+	   }
+	return conn;
+	}
 
 @KafkaListener(topics = "BikeEvent", groupId = "kafka-sandbox")
 	public void listen(String message) {
@@ -91,14 +88,10 @@ return conn;
 		    }
 }
 
-
-
-
 		public List<String> getMessages() {
 		
 		    return messages;
 
 
-
-}
+		}
 }
